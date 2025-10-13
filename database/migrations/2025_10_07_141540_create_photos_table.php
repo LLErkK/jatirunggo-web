@@ -6,14 +6,11 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('photos', function (Blueprint $table) {
             $table->id();
-            $table->string('tema');
+            $table->foreignId('thumbnail_id')->constrained()->onDelete('cascade');
             $table->string('title');
             $table->text('caption');
             $table->string('image');
@@ -21,9 +18,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('photos');

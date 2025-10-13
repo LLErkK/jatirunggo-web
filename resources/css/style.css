@@ -1,0 +1,581 @@
+/* Reset dasar */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    scroll-behavior: smooth;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* Header */
+header {
+    background: #2c3e50;
+    color: white;
+    padding: 20px 0;
+}
+
+header ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+header a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+header a:hover {
+    color: #e67e22;
+}
+
+header::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+#navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #2c3e50;
+    color: white;
+    z-index: 9999;
+    transition: top 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Logo dan Judul Header */
+.logo-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-title h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.logo-title img {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
+}
+
+nav ul li a.active {
+    border-bottom: 2px solid #e67e22;
+    color: #e67e22;
+    font-weight: bold;
+}
+
+/* Responsif untuk Logo & Header */
+@media (max-width: 768px) {
+    .logo-title {
+        justify-content: center;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+
+    .logo-title h1 {
+        font-size: 1.2rem;
+    }
+
+    header .container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+}
+
+/* Hero Section */
+.hero {
+    position: relative;
+    background: url('../images/profilngobo.jpeg') center/cover no-repeat;
+    color: white;
+    text-align: center;
+    padding: 120px 20px 80px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1;
+}
+
+.hero .container {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.hero h2 {
+    font-size: 32px;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero p {
+    font-size: 16px;
+    line-height: 1.8;
+    margin-bottom: 15px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    color: #f0f0f0;
+}
+
+/* Komoditas Section */
+.komoditas {
+    padding: 60px 20px;
+    background: linear-gradient(to bottom, #ffffff, #f9f9f9);
+}
+
+.komoditas h2 {
+    font-size: 32px;
+    margin-bottom: 40px;
+    color: #2c3e50;
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+}
+
+.komoditas h2::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 4px;
+    background-color: #e67e22;
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+/* Grid Card */
+.komoditas .grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Card Styling */
+.card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    flex: 1 1 calc(33.333% - 30px);
+    max-width: 400px;
+    min-width: 280px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Image Grid dalam Card */
+.card .image-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* Ukuran Foto Seragam */
+.card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+    transition: transform 0.3s ease;
+}
+
+.card img:hover {
+    transform: scale(1.05);
+}
+
+/* Teks Card */
+.card h3 {
+    font-size: 20px;
+    color: #2c3e50;
+    margin: 0 0 10px;
+    font-weight: 600;
+}
+
+.card p {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+}
+
+.card a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+/* Jika hanya ada 1 gambar di dalam card */
+.card .image-grid:has(img:nth-child(2)) {
+    grid-template-columns: repeat(2, 1fr); /* dua gambar tetap dua kolom */
+}
+
+.card .image-grid:not(:has(img:nth-child(2))) {
+    grid-template-columns: 1fr; /* hanya 1 gambar -> penuh */
+}
+
+.card .image-grid img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+    transition: transform 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .card .image-grid img {
+        height: 180px;
+    }
+}
+
+/* Responsif Card */
+@media (max-width: 992px) {
+    .card {
+        flex: 1 1 calc(50% - 30px);
+    }
+}
+
+@media (max-width: 768px) {
+    .komoditas .grid {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .card img {
+        height: 180px;
+    }
+}
+
+/* Tentang Kami Section */
+.tentang {
+    padding: 60px 20px;
+    background: #f9f9f9;
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.tentang .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.tentang h2 {
+    font-size: 32px;
+    margin-bottom: 30px;
+    color: #2c3e50;
+    position: relative;
+    display: inline-block;
+}
+
+.tentang h2::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 4px;
+    background-color: #e67e22;
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+.tentang p {
+    font-size: 16px;
+    line-height: 1.8;
+    margin-bottom: 20px;
+    text-align: justify;
+    color: #444;
+    transition: transform 0.3s ease;
+}
+
+.tentang p:hover {
+    transform: scale(1.01);
+}
+
+/* Animasi Fade In */
+.fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 1s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Lokasi Section */
+.lokasi {
+    padding: 60px 20px;
+    background: linear-gradient(135deg, #e0f7fa 0%, #ffffff 100%);
+    text-align: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.lokasi h2 {
+    font-size: 32px;
+    color: #2c3e50;
+    margin-bottom: 40px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: relative;
+    display: inline-block;
+}
+
+.lokasi h2::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 4px;
+    background-color: #e67e22;
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+/* Map Wrapper */
+.map-wrapper {
+    position: relative;
+    padding-bottom: 45%;
+    height: 0;
+    overflow: hidden;
+    max-width: 900px;
+    margin: 0 auto;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.map-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 12px;
+}
+
+/* Responsif Lokasi */
+@media (max-width: 768px) {
+    .lokasi {
+        padding: 40px 15px;
+    }
+
+    .lokasi h2 {
+        font-size: 28px;
+        margin-bottom: 30px;
+    }
+
+    .map-wrapper {
+        padding-bottom: 60%;
+    }
+}
+
+@media (max-width: 480px) {
+    .map-wrapper {
+        padding-bottom: 75%;
+    }
+}
+
+/* Kontak Section */
+.kontak {
+    padding: 60px 20px;
+    background: #f0f0f0;
+    text-align: center;
+}
+
+.kontak h2 {
+    font-size: 32px;
+    margin-bottom: 40px;
+    color: #2c3e50;
+    position: relative;
+    display: inline-block;
+}
+
+.kontak h2::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 4px;
+    background-color: #e67e22;
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+.kontak-info {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.kontak-info p {
+    font-size: 16px;
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: #333;
+    padding: 10px;
+    transition: background 0.3s ease;
+    border-radius: 8px;
+}
+
+.kontak-info p:hover {
+    background: rgba(230, 126, 34, 0.1);
+}
+
+.kontak-info i {
+    color: #e67e22;
+    min-width: 25px;
+    text-align: center;
+    font-size: 20px;
+}
+
+.kontak-info a {
+    text-decoration: none;
+    color: #2c3e50;
+    transition: color 0.3s ease;
+}
+
+.kontak-info a:hover {
+    color: #e67e22;
+}
+
+@media (max-width: 480px) {
+    .kontak-info p {
+        font-size: 14px;
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    .kontak-info i {
+        font-size: 18px;
+    }
+}
+
+/* Footer */
+footer {
+    background: #2c3e50;
+    color: white;
+    padding: 30px 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-logo img {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
+}
+
+.footer-text {
+    flex-grow: 1;
+    text-align: center;
+    font-size: 14px;
+    color: #ddd;
+}
+
+/* Responsif Footer */
+@media (max-width: 600px) {
+    .footer-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .footer-text {
+        order: 2;
+    }
+
+    .footer-logo {
+        order: 1;
+    }
+}
+
+/* General Responsive Adjustments */
+@media (max-width: 768px) {
+    .hero h2 {
+        font-size: 24px;
+    }
+
+    .hero p {
+        font-size: 14px;
+    }
+
+    section h2 {
+        font-size: 28px;
+    }
+}

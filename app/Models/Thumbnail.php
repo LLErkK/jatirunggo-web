@@ -9,9 +9,13 @@ class Thumbnail extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title','caption'];
+    protected $fillable = [
+        'title',
+        'caption',
+    ];
 
-    public function iamges() {
-        return $this->hasMany(Thumbnail_images::class);
+    public function images()
+    {
+        return $this->hasMany(Thumbnail_images::class, 'thumbnail_id');
     }
 }

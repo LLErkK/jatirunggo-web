@@ -11,7 +11,7 @@ class ThumbnailsController extends Controller
 {
     public function index(){
         $thumbnails = Thumbnail::with('images')->latest()->get();
-        return $thumbnails;
+         return view('thumbnail.index', compact('thumbnails'));
     }
 
     public function store(Request $request){
@@ -35,14 +35,14 @@ class ThumbnailsController extends Controller
             }
         }
 
-        //return redirect()->route('thumbnails.index')->with('success', 'Thumbnail berhasil dibuat!');
+        return redirect()->route('thumbnails.index')->with('success', 'Thumbnail berhasil dibuat!');
 
     }
 
     public function show(Thumbnail $thumbnail)
     {
         $thumbnail->load('images');
-        return view('thumbnails.show', compact('thumbnail'));
+        return view('thumbnail.show', compact('thumbnail'));
     }
 
      public function destroy(Thumbnail $thumbnail)
@@ -61,7 +61,12 @@ class ThumbnailsController extends Controller
     public function edit(Thumbnail $thumbnail)
 {
     $thumbnail->load('images');
-    return view('thumbnails.edit', compact('thumbnail'));
+    return view('thumbnail.edit', compact('thumbnail'));
+}
+
+public function create()
+{
+    return view('thumbnail.create');
 }
 
 /**
@@ -96,12 +101,12 @@ public function update(Request $request, Thumbnail $thumbnail)
     // Tambahkan gambar baru (jika ada)
     if ($request->hasFile('images')) {
         foreach ($request->file('images') as $image) {
-            $path = $image->store('thumbnails', 'public');
+            $path = $image->store('thumbnail', 'public');
             $thumbnail->images()->create(['image' => $path]);
         }
     }
 
-    return redirect()->route('thumbnails.show', $thumbnail->id)
+    return redirect()->route('thumbnail.show', $thumbnail->id)
                      ->with('success', 'Thumbnail berhasil diperbarui!');
 }
 }
