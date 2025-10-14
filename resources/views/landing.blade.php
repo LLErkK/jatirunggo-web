@@ -14,7 +14,7 @@
     <header id="navbar">
         <div class="container">
             <div class="logo-title">
-                <img src="images/ptpni.png" alt="Logo PTPN I">
+                <img src="{{ Vite::asset('resources/images/ptpni.png') }}" alt="Logo PTPN I">
                 <h1>PTPN I Regional 3 Kebun Ngobo</h1>
             </div>
             <nav>
@@ -118,7 +118,7 @@
 
     <!-- Footer -->
     <div style="width: 100%; border: none; margin-top: 50px;">
-        <iframe src="footer.html" style="width: 100%; height: 140px; border: none;" scrolling="no" loading="lazy"></iframe>
+        @include('layouts.footer')
     </div>
 
     <script src="js/script.js"></script>

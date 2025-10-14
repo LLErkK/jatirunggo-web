@@ -73,10 +73,10 @@ header .container {
     gap: 15px;
 }
 
-.logo-title h1 {
+/* .logo-title h1 {
     font-size: 1.5rem;
     font-weight: 600;
-}
+} */
 
 .logo-title img {
     height: 50px;
