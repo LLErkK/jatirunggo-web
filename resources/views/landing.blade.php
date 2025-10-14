@@ -52,28 +52,32 @@
         </div>
     </section>
 
-    <!-- Komoditas -->
-    <section id="komoditas" class="komoditas">
+<!-- Update bagian komoditas di resources/views/landing.blade.php -->
 
-        <h2>Komoditas</h2>
+<section id="komoditas" class="komoditas">
+    <h2>Komoditas</h2>
 
-        <div class="grid">
-    @foreach ($thumbnails as $thumbnail)
-        <div class="card">
-            <h3>{{ $thumbnail->title }}</h3>
-            <p>{{ $thumbnail->caption }}</p>
+    <div class="grid">
+        @foreach ($thumbnails as $thumbnail)
+            <a href="{{ route('komoditas.show', $thumbnail->id) }}" class="card-link">
+                <div class="card">
+                    <h3>{{ $thumbnail->title }}</h3>
+                    <p>{{ $thumbnail->caption }}</p>
 
-            <div class="image-grid">
-                @foreach ($thumbnail->images as $img)
-                    <img src="{{ asset('storage/' . $img->image) }}" alt="{{ $thumbnail->title }}">
-                @endforeach
-            </div>
-        </div>
-    @endforeach
-</div>
-
-    </section>
-
+                    <div class="image-grid">
+                        @foreach ($thumbnail->images->take(4) as $img)
+                            <img src="{{ asset('storage/' . $img->image) }}" alt="{{ $thumbnail->title }}">
+                        @endforeach
+                    </div>
+                    
+                    <div class="card-footer">
+                        <span>Lihat Detail <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </div>
+            </a>
+        @endforeach
+    </div>
+</section>
     <!-- Tentang Kami -->
     <section id="tentang" class="tentang fade-in">
         <div class="container">

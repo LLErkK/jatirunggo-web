@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\KomoditasController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\ProfileController;
@@ -7,6 +8,8 @@ use App\Http\Controllers\ThumbnailsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingController::class, 'index'])->name('landing');
+
+Route::get('/komoditas/{thumbnail}', [KomoditasController::class, 'show'])->name('komoditas.show');
 
 Route::get('/login', function () {
     return view('auth.login');

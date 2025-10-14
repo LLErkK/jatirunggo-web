@@ -18,4 +18,10 @@ class Thumbnail extends Model
     {
         return $this->hasMany(Thumbnail_images::class, 'thumbnail_id');
     }
+
+    // Tambahkan relasi ke photos
+    public function photos()
+    {
+        return $this->hasMany(Photo::class, 'thumbnail_id');
+    }
 }
