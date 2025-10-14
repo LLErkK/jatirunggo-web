@@ -32,15 +32,23 @@
     <!-- Beranda -->
     <section id="home" class="hero">
         <div class="container">
-            <h2>Visi</h2>
-            <p>"Menjadi perusahaan agribisnis nasional yang tangguh dan berdaya saing kelas dunia serta berkontribusi secara berkesinambungan bagi kemajuan bangsa".</p>
+            <div class="visi-misi-wrapper">
+                <!-- Visi -->
+                <div class="visi-section">
+                    <h2>Visi</h2>
+                    <p>"Menjadi perusahaan agribisnis nasional yang tangguh dan berdaya saing kelas dunia serta berkontribusi secara berkesinambungan bagi kemajuan bangsa".</p>
+                </div>
 
-            <h2>Misi</h2>
-            <p>Menghasilkan produk yang berkualitas tinggi bagi pelanggan.</p>
-            <p>Membentuk kapabilitas proses kerja yang unggul melalui perbaikan dan inovasi berkelanjutan dengan tata kelola perusahaan yang baik.</p>
-            <p>Mengembangkan organisasi dan budaya yang prima serta SDM yang kompeten dan sejahtera dalam merealisasi potensi setiap insani.</p>
-            <p>Melakukan optimalisasi pemanfaatan aset untuk memberikan imbal hasil terbaik.</p>
-            <p>Turut serta dalam meningkatkan kesejahteraan masyarakat dan menjaga kelestarian lingkungan untuk kebaikan generasi masa depan.</p>
+                <!-- Misi -->
+                <div class="misi-section">
+                    <h2>Misi</h2>
+                    <p>Menghasilkan produk yang berkualitas tinggi bagi pelanggan.</p>
+                    <p>Membentuk kapabilitas proses kerja yang unggul melalui perbaikan dan inovasi berkelanjutan dengan tata kelola perusahaan yang baik.</p>
+                    <p>Mengembangkan organisasi dan budaya yang prima serta SDM yang kompeten dan sejahtera dalam merealisasi potensi setiap insani.</p>
+                    <p>Melakukan optimalisasi pemanfaatan aset untuk memberikan imbal hasil terbaik.</p>
+                    <p>Turut serta dalam meningkatkan kesejahteraan masyarakat dan menjaga kelestarian lingkungan untuk kebaikan generasi masa depan.</p>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -121,6 +129,6 @@
         @include('layouts.footer')
     </div>
 
-    <script src="js/script.js"></script>
+    <script src="@vite(['resources/js/script.js'])"></script>
 </body>
 </html>
