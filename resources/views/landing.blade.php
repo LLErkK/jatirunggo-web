@@ -70,9 +70,7 @@
                         @endforeach
                     </div>
                     
-                    <div class="card-footer">
-                        <span>Lihat Detail <i class="fas fa-arrow-right"></i></span>
-                    </div>
+                
                 </div>
             </a>
         @endforeach

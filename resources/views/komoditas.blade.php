@@ -6,27 +6,26 @@
     <title>{{ $thumbnail->title }} - PTPN I Regional 3 Kebun Ngobo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     @vite(['resources/css/komoditas.css'])
+   
 </head>
 <body>
     <!-- Header -->
     <header id="navbar">
-        <div class="container">
-            <div class="logo-title">
-                <img src="{{ Vite::asset('resources/images/ptpni.png') }}" alt="Logo PTPN I">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <div class="logo-title" style="display: flex; align-items: center; gap: 10px;">
+                <img src="{{ Vite::asset('resources/images/ptpni.png') }}" alt="Logo PTPN I" style="height: 50px;">
                 <h1>PTPN I Regional 3 Kebun Ngobo</h1>
             </div>
             <nav>
                 <ul>
                     <li><a href="{{ route('landing') }}">Beranda</a></li>
                     @foreach($thumbnails as $thumb)
-                        <li class="{{ $thumb->photos->isNotEmpty() ? 'dropdown' : '' }}">
-                            <a href="{{ route('komoditas.show', $thumb->id) }}" 
-                               class="{{ $thumbnail->id == $thumb->id ? 'active' : '' }}">
+                        <li class="{{ $thumbnail->id == $thumb->id ? 'active' : '' }}">
+                            <a href="{{ route('komoditas.show', $thumb->id) }}">
                                 {{ $thumb->title }}
                             </a>
-                            
-                            @if($thumb->photos->isNotEmpty() && $thumbnail->id == $thumb->id)
-                                <ul class="dropdown-content">
+                            @if($thumb->photos->isNotEmpty())
+                                <ul class="section-dropdown">
                                     @foreach($thumb->photos as $photo)
                                         <li>
                                             <a href="#{{ Str::slug($photo->title) }}">{{ $photo->title }}</a>
@@ -40,47 +39,57 @@
             </nav>
         </div>
     </header>
+<!-- Hero Section -->
+<section class="hero" 
+         @if($thumbnail->background_image)
+             style="background-image: url('{{ asset('storage/' . $thumbnail->background_image) }}'); 
+                    background-size: cover; 
+                    background-position: center; 
+                    background-repeat: no-repeat;"
+         @endif
+>
+    <div class="container" style="padding: 80px 20px; color: white; text-shadow: 1px 1px 5px rgba(0,0,0,0.7);">
+        <h2 class="text-4xl font-bold mb-4">{{ $thumbnail->title }}</h2>
+        <p class="text-lg">{{ $thumbnail->description }}</p>
+    </div>
+</section>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <h2>{{ $thumbnail->title }}</h2>
-            <p>{{ $thumbnail->caption }}</p>
-        </div>
-    </section>
+
 
     <!-- Content Sections -->
     @foreach($thumbnail->photos as $index => $photo)
         <section id="{{ Str::slug($photo->title) }}" class="content-section">
-            <div class="tahap">
-                @if($index % 2 == 0)
-                    <!-- Image Left -->
-                    <div class="tahap-img">
-                        <img src="{{ asset('storage/' . $photo->image) }}" alt="{{ $photo->title }}">
-                    </div>
-                    <div class="tahap-text">
-                        <h3>{{ $index + 1 }}. {{ $photo->title }}</h3>
-                        <p>{{ $photo->caption }}</p>
-                    </div>
-                @else
-                    <!-- Image Right -->
-                    <div class="tahap-text">
-                        <h3>{{ $index + 1 }}. {{ $photo->title }}</h3>
-                        <p>{{ $photo->caption }}</p>
-                    </div>
-                    <div class="tahap-img">
-                        <img src="{{ asset('storage/' . $photo->image) }}" alt="{{ $photo->title }}">
-                    </div>
-                @endif
+            <div class="tahap" style="flex-direction: {{ $index % 2 == 0 ? 'row' : 'row-reverse' }};">
+                <div class="tahap-img">
+                    <img src="{{ asset('storage/' . $photo->image) }}" alt="{{ $photo->title }}">
+                </div>
+                <div class="tahap-text">
+                    <h3>{{ $index + 1 }}. {{ $photo->title }}</h3>
+                    <p>{{ $photo->caption }}</p>
+                </div>
             </div>
         </section>
     @endforeach
 
     <!-- Footer -->
-    <div style="width: 100%; border: none; margin-top: 50px;">
+    <div style="width: 100%; margin-top: 50px;">
         @include('layouts.footer')
     </div>
 
-    <script src="@vite(['resources/js/script.js'])"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scroll untuk anchor # di halaman ini
+            document.querySelectorAll('a[href^="#"]').forEach(link => {
+                link.addEventListener('click', function(e){
+                    const href = this.getAttribute('href');
+                    const target = document.querySelector(href);
+                    if(target){
+                        e.preventDefault();
+                        target.scrollIntoView({behavior: 'smooth'});
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

@@ -1,5 +1,112 @@
 /* resources/css/komoditas.css */
+/* Navbar horizontal */
+        nav ul {
+            display: flex;
+            gap: 20px;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
 
+        nav ul li {
+            position: relative;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: black;
+            padding: 10px 15px;
+            display: block;
+        }
+
+        nav ul li a.active {
+            background-color: #27ae60;
+            color: white;
+            border-radius: 5px;
+        }
+
+        /* Dropdown for section anchors */
+        .section-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #f9f9f9;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            min-width: 200px;
+            z-index: 1000;
+        }
+
+        .section-dropdown li a {
+            padding: 10px 15px;
+            display: block;
+            color: black;
+        }
+
+        .section-dropdown li a:hover {
+            background: #ddd;
+        }
+
+        /* Show dropdown on hover desktop */
+        @media (min-width: 769px) {
+            .has-sections:hover .section-dropdown {
+                display: block;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+            }
+        }
+
+        /* Hero section */
+        .hero {
+            background: #3498db;
+            color: white;
+            padding: 50px 0;
+        }
+
+        /* Quick navigation buttons */
+        .quick-nav a {
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 5px 5px 0 0;
+        }
+
+        .quick-nav a.active {
+            background-color: #27ae60;
+        }
+
+        /* Tahap section */
+        .tahap {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin: 50px 0;
+        }
+
+        .tahap-img img {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+
+        .tahap-text {
+            flex: 1;
+        }
+
+        @media (max-width: 768px) {
+            .tahap {
+                flex-direction: column;
+            }
+        }
 * {
     margin: 0;
     padding: 0;

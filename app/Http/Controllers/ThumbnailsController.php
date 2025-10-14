@@ -9,34 +9,58 @@ use Illuminate\Support\Facades\Storage;
 
 class ThumbnailsController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $thumbnails = Thumbnail::with('images')->latest()->get();
-         return view('thumbnail.index', compact('thumbnails'));
+        return view('thumbnail.index', compact('thumbnails'));
     }
 
-    public function store(Request $request){
+    public function create()
+    {
+        return view('thumbnail.create');
+    }
+
+    public function store(Request $request)
+    {
         $request->validate([
             'title' => 'required|string|max:255',
             'caption' => 'required|string',
-            'images.*' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'description' => 'required|string',
+            'background_image_cropped' => 'required|string',
+            'images_cropped' => 'nullable|string', // JSON array base64
         ]);
 
-        $thumbnail = Thumbnail::create([
+        $thumbnailData = [
             'title' => $request->title,
             'caption' => $request->caption,
-        ]);
+            'description' => $request->description,
+        ];
 
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $path = $image->store('thumbnails', 'public');
-                $thumbnail->images()->create([
-                    'image' => $path,
-                ]);
+        // Simpan background image (16:9)
+        if ($request->background_image_cropped) {
+            $bg = $request->background_image_cropped;
+            $bg = preg_replace('/^data:image\/\w+;base64,/', '', $bg);
+            $bg = str_replace(' ', '+', $bg);
+            $bgName = 'thumbnails/' . uniqid() . '.png';
+            Storage::disk('public')->put($bgName, base64_decode($bg));
+            $thumbnailData['background_image'] = $bgName;
+        }
+
+        $thumbnail = Thumbnail::create($thumbnailData);
+
+        // Simpan gambar tambahan (4:3)
+        if ($request->images_cropped) {
+            $imagesBase64 = json_decode($request->images_cropped, true); // array of base64
+            foreach ($imagesBase64 as $imgBase64) {
+                $img = preg_replace('/^data:image\/\w+;base64,/', '', $imgBase64);
+                $img = str_replace(' ', '+', $img);
+                $imgName = 'thumbnails/' . uniqid() . '.png';
+                Storage::disk('public')->put($imgName, base64_decode($img));
+                $thumbnail->images()->create(['image' => $imgName]);
             }
         }
 
         return redirect()->route('thumbnails.index')->with('success', 'Thumbnail berhasil dibuat!');
-
     }
 
     public function show(Thumbnail $thumbnail)
@@ -45,68 +69,82 @@ class ThumbnailsController extends Controller
         return view('thumbnail.show', compact('thumbnail'));
     }
 
-     public function destroy(Thumbnail $thumbnail)
+    public function edit(Thumbnail $thumbnail)
+    {
+        $thumbnail->load('images');
+        return view('thumbnail.edit', compact('thumbnail'));
+    }
+
+    public function update(Request $request, Thumbnail $thumbnail)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'caption' => 'required|string',
+            'description' => 'required|string',
+            'background_image_cropped' => 'nullable|string',
+            'images_cropped' => 'nullable|string', // JSON array base64
+            'remove_images' => 'array',
+            'remove_images.*' => 'integer',
+        ]);
+
+        $thumbnailData = [
+            'title' => $request->title,
+            'caption' => $request->caption,
+            'description' => $request->description,
+        ];
+
+        // Update background image jika ada
+        if ($request->background_image_cropped) {
+            if ($thumbnail->background_image) {
+                Storage::disk('public')->delete($thumbnail->background_image);
+            }
+            $bg = preg_replace('/^data:image\/\w+;base64,/', '', $request->background_image_cropped);
+            $bg = str_replace(' ', '+', $bg);
+            $bgName = 'thumbnails/' . uniqid() . '.png';
+            Storage::disk('public')->put($bgName, base64_decode($bg));
+            $thumbnailData['background_image'] = $bgName;
+        }
+
+        $thumbnail->update($thumbnailData);
+
+        // Hapus gambar yang dipilih
+        if ($request->remove_images) {
+            $imagesToRemove = Thumbnail_images::whereIn('id', $request->remove_images)->get();
+            foreach ($imagesToRemove as $img) {
+                Storage::disk('public')->delete($img->image);
+                $img->delete();
+            }
+        }
+
+        // Tambah gambar baru (4:3)
+        if ($request->images_cropped) {
+            $imagesBase64 = json_decode($request->images_cropped, true);
+            foreach ($imagesBase64 as $imgBase64) {
+                $img = preg_replace('/^data:image\/\w+;base64,/', '', $imgBase64);
+                $img = str_replace(' ', '+', $img);
+                $imgName = 'thumbnails/' . uniqid() . '.png';
+                Storage::disk('public')->put($imgName, base64_decode($img));
+                $thumbnail->images()->create(['image' => $imgName]);
+            }
+        }
+
+        return redirect()->route('thumbnails.show', $thumbnail->id)
+                         ->with('success', 'Thumbnail berhasil diperbarui!');
+    }
+
+    public function destroy(Thumbnail $thumbnail)
     {
         // Hapus semua file gambar di storage
         foreach ($thumbnail->images as $img) {
             Storage::disk('public')->delete($img->image);
         }
 
-        // Hapus dari database
+        if ($thumbnail->background_image) {
+            Storage::disk('public')->delete($thumbnail->background_image);
+        }
+
         $thumbnail->delete();
 
         return redirect()->route('thumbnails.index')->with('success', 'Thumbnail berhasil dihapus!');
     }
-
-    public function edit(Thumbnail $thumbnail)
-{
-    $thumbnail->load('images');
-    return view('thumbnail.edit', compact('thumbnail'));
-}
-
-public function create()
-{
-    return view('thumbnail.create');
-}
-
-/**
- * Update data thumbnail dan gambar-gambarnya.
- */
-public function update(Request $request, Thumbnail $thumbnail)
-{
-    $request->validate([
-        'title' => 'required|string|max:255',
-        'caption' => 'required|string',
-        'images.*' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        'remove_images' => 'array',
-        'remove_images.*' => 'integer',
-    ]);
-
-    // Update title dan caption
-    $thumbnail->update([
-        'title' => $request->title,
-        'caption' => $request->caption,
-    ]);
-
-    // Hapus gambar yang dipilih untuk dihapus
-    if ($request->has('remove_images')) {
-        $imagesToRemove = Thumbnail_images::whereIn('id', $request->remove_images)->get();
-
-        foreach ($imagesToRemove as $img) {
-            Storage::disk('public')->delete($img->image);
-            $img->delete();
-        }
-    }
-
-    // Tambahkan gambar baru (jika ada)
-    if ($request->hasFile('images')) {
-        foreach ($request->file('images') as $image) {
-            $path = $image->store('thumbnail', 'public');
-            $thumbnail->images()->create(['image' => $path]);
-        }
-    }
-
-    return redirect()->route('thumbnail.show', $thumbnail->id)
-                     ->with('success', 'Thumbnail berhasil diperbarui!');
-}
 }

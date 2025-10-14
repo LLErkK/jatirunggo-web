@@ -12,6 +12,8 @@ class Thumbnail extends Model
     protected $fillable = [
         'title',
         'caption',
+        'description',
+        'background_image',
     ];
 
     public function images()
