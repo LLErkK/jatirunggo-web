@@ -18,6 +18,7 @@ class ThumbnailsController extends Controller
     public function create()
     {
         return view('thumbnail.create');
+
     }
 
     public function store(Request $request)

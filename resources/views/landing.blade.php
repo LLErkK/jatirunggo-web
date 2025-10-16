@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="description" content="PTPN I Regional 3 Kebun Ngobo - Perkebunan karet, lokasi, kontak, dan informasi lengkap.">
     <title>PTPN I Regional 3 Kebun Ngobo</title>
-    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     @vite(['resources/css/style.css'])
 </head>
@@ -21,6 +20,7 @@
                 <ul>
                     <li><a href="#home" class="active">Beranda</a></li>
                     <li><a href="#komoditas">Komoditas</a></li>
+                    <li><a href="#artikel">Artikel</a></li>
                     <li><a href="#tentang">Tentang Kami</a></li>
                     <li><a href="#lokasi">Lokasi</a></li>
                     <li><a href="#kontak">Kontak</a></li>
@@ -52,28 +52,41 @@
         </div>
     </section>
 
-<!-- Update bagian komoditas di resources/views/landing.blade.php -->
-
-<section id="komoditas" class="komoditas">
-    <h2>Komoditas</h2>
-
-    <div class="grid">
-        @foreach ($thumbnails as $thumbnail)
-            <a href="{{ route('komoditas.show', $thumbnail->id) }}" class="card-link">
-                <div class="card">
-                    <h3>{{ $thumbnail->title }}</h3>
-                    <p>{{ $thumbnail->caption }}</p>
-
-                    <div class="image-grid">
-                        @foreach ($thumbnail->images->take(4) as $img)
-                            <img src="{{ asset('storage/' . $img->image) }}" alt="{{ $thumbnail->title }}">
-                        @endforeach
+    <!-- Komoditas -->
+    <section id="komoditas" class="komoditas">
+        <h2>Komoditas</h2>
+        <div class="grid">
+            @foreach ($thumbnails as $thumbnail)
+                <a href="{{ route('komoditas.show', $thumbnail->id) }}" class="card-link">
+                    <div class="card">
+                        <h3>{{ $thumbnail->title }}</h3>
+                        <p>{{ $thumbnail->caption }}</p>
+                        <div class="image-grid">
+                            @foreach ($thumbnail->images->take(4) as $img)
+                                <img src="{{ asset('storage/' . $img->image) }}" alt="{{ $thumbnail->title }}">
+                            @endforeach
+                        </div>
                     </div>
-                    
-                
-                </div>
-            </a>
-        @endforeach
+                </a>
+            @endforeach
+        </div>
+    </section>
+
+    <!-- === ARTIKEL TERBARU === -->
+<section id="artikel" class="artikel">
+    <div class="container">
+        <h2>Artikel Terbaru</h2>
+        <div class="grid">
+            @foreach ($articles->take(3) as $article)
+                <a href="{{ route('berita.show', $article->id) }}" class="card-link">
+    <div class="card">
+        <h3>{{ $article->title }}</h3>
+        <p>{{ Str::limit(strip_tags($article->article_content), 100) }}</p>
+    </div>
+</a>
+
+            @endforeach
+        </div>
     </div>
 </section>
     <!-- Tentang Kami -->
@@ -85,13 +98,11 @@
                 bergerak di bidang perkebunan dan pengolahan hasil agrikultur seperti karet, kopi, teh, dan gula. 
                 PTPN I berdiri sejak tahun 1996 melalui penggabungan beberapa perusahaan perkebunan negara, dan berkantor pusat di Semarang.
             </p>    
-
             <p>
                 Kebun Ngobo dikelola sebagai unit kebun yang fokus pada budidaya komoditas seperti karet dan kopi. 
                 Berdasarkan informasi dari PTPN I Regional 3, kebun ini merupakan bagian dari lokasi operasional utama perusahaan 
                 di wilayah Jawa Tengah khususnya kedekatannya dengan Getas dan Jollong.
             </p>
-
             <p>
                 Selain fungsi agrikultur, PTPN I Regional 3 juga mengembangkan kawasan Kebun Ngobo sebagai bagian dari agrowisata, 
                 selaras dengan konsep agrotourism yang dikembangkan di lokasi-lokasi seperti Kampoeng Kopi Banaran. 

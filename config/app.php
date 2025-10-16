@@ -117,6 +117,8 @@ return [
     | Supported drivers: "file", "cache"
     |
     */
+    'Image' => Intervention\Image\Facades\Image::class,
+
 
     'maintenance' => [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),

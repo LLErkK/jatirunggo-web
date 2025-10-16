@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Article;
 use App\Models\Thumbnail;
 use Illuminate\Http\Request;
 
 class LandingController extends Controller
 {
-    public function index()
-    {
-        $thumbnails = Thumbnail::latest()->get();
-        return view('landing', compact('thumbnails'));
-    }
+public function index()
+{
+    $thumbnails = Thumbnail::with('images')->get();
+    $articles = Article::latest()->get();
+
+    return view('landing', compact('thumbnails', 'articles'));
+}
+
+
 }

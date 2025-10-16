@@ -27,7 +27,7 @@ class PhotoController extends Controller
             'thumbnail_id' => 'required|exists:thumbnails,id',
             'title' => 'required|string|max:255',
             'caption' => 'required|string',
-            'image' => 'required|image|mimes:jpg,jpeg,png|max:20000', // 20 MB
+            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048', // Max 2 MB
         ]);
 
         $path = $request->file('image')->store('photos', 'public');
@@ -54,7 +54,7 @@ class PhotoController extends Controller
             'thumbnail_id' => 'required|exists:thumbnails,id',
             'title' => 'required|string|max:255',
             'caption' => 'required|string',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:20000', // 20 MB
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // Max 2 MB
         ]);
 
         $data = [
@@ -64,7 +64,11 @@ class PhotoController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            Storage::disk('public')->delete($photo->image);
+            // Hapus file lama jika ada
+            if ($photo->image && Storage::disk('public')->exists($photo->image)) {
+                Storage::disk('public')->delete($photo->image);
+            }
+
             $data['image'] = $request->file('image')->store('photos', 'public');
         }
 

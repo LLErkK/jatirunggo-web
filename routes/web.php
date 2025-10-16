@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\KomoditasController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\PhotoController;
@@ -36,6 +37,10 @@ Route::middleware('auth')->group(function () {
 
     // CRUD Thumbnails
     Route::resource('thumbnails', ThumbnailsController::class);
+
+     // CRUD Article
+    Route::resource('articles', ArticleController::class);
+    Route::get('/berita/{id}', [ArticleController::class, 'publicShow'])->name('berita.show');    
 });
 
 require __DIR__ . '/auth.php';

@@ -48,15 +48,15 @@
                         <textarea name="caption" class="form-control" required>{{ $photo->caption }}</textarea>
                     </div>
 
-                    <!-- Upload Gambar & Cropper -->
+                    <!-- Upload Gambar -->
                     <div class="mb-4">
-                        <label>Upload Gambar Baru (opsional)</label>
+                        <label>Upload Gambar Baru (opsional, max 2 MB)</label>
                         <input type="file" id="imageInput" accept="image/*" class="form-control">
                     </div>
 
-                    <!-- Preview / Crop -->
+                    <!-- Preview -->
                     <div class="mb-4">
-                        <img id="imagePreview" src="{{ asset('storage/' . $photo->image) }}" style="max-width:100%;" />
+                        <img id="imagePreview" src="{{ asset('storage/' . $photo->image) }}" style="max-width:100%; border-radius:8px;">
                     </div>
 
                     <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded">
@@ -85,13 +85,20 @@
             const file = e.target.files[0];
             if (!file) return;
 
+            // 🔒 Validasi ukuran file (maks 2 MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Ukuran file maksimal 2 MB!');
+                imageInput.value = '';
+                return;
+            }
+
             const reader = new FileReader();
             reader.onload = function(event) {
                 imagePreview.src = event.target.result;
 
                 if (cropper) cropper.destroy();
                 cropper = new Cropper(imagePreview, {
-                    aspectRatio: 3 / 4,
+                    aspectRatio: 4 / 3, // 🔲 wajib rasio 3:4
                     viewMode: 1,
                     autoCropArea: 1,
                 });
@@ -100,19 +107,18 @@
         });
 
         form.addEventListener('submit', function(e) {
-            // Hanya lakukan crop jika user upload file baru
             if (imageInput.files.length > 0 && cropper) {
                 e.preventDefault();
 
                 cropper.getCroppedCanvas().toBlob(function(blob) {
-                    const formData = new FormData(form);
+                    if (blob.size > 5 * 1024 * 1024) {
+                        alert('Hasil crop melebihi 2 MB! Coba crop lebih kecil.');
+                        return;
+                    }
 
-                    // hapus input file asli
-                    formData.delete('image');
-                    // tambahkan blob crop
+                    const formData = new FormData(form);
                     formData.append('image', blob, 'cropped.jpg');
 
-                    // kirim via fetch
                     fetch(form.action, {
                         method: 'POST',
                         body: formData,
@@ -121,18 +127,18 @@
                         }
                     })
                     .then(res => {
-                        if(res.ok) {
+                        if (res.ok) {
                             alert('Foto berhasil diperbarui!');
                             window.location.reload();
                         } else {
-                            alert('Gagal update foto');
+                            alert('Gagal update foto.');
                         }
                     })
                     .catch(err => {
                         console.error(err);
-                        alert('Terjadi kesalahan');
+                        alert('Terjadi kesalahan.');
                     });
-                });
+                }, 'image/jpeg', 0.9);
             }
         });
     </script>
