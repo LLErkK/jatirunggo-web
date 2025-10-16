@@ -52,41 +52,78 @@
         </div>
     </section>
 
-    <!-- Komoditas -->
-    <section id="komoditas" class="komoditas">
-        <h2>Komoditas</h2>
-        <div class="grid">
-            @foreach ($thumbnails as $thumbnail)
-                <a href="{{ route('komoditas.show', $thumbnail->id) }}" class="card-link">
-                    <div class="card">
-                        <h3>{{ $thumbnail->title }}</h3>
-                        <p>{{ $thumbnail->caption }}</p>
-                        <div class="image-grid">
-                            @foreach ($thumbnail->images->take(4) as $img)
-                                <img src="{{ asset('storage/' . $img->image) }}" alt="{{ $thumbnail->title }}">
-                            @endforeach
-                        </div>
-                    </div>
-                </a>
-            @endforeach
-        </div>
-    </section>
-
-    <!-- === ARTIKEL TERBARU === -->
+   <!-- Komoditas -->
+<section id="komoditas" class="komoditas">
+    <h2>Komoditas</h2>
+    <div class="grid">
+        @foreach ($thumbnails as $thumbnail)
+            <div class="card">
+                <h3>{{ $thumbnail->title }}</h3>
+                <p>{{ $thumbnail->caption }}</p>
+                <div class="image-grid">
+                    @foreach ($thumbnail->images->take(4) as $img)
+                        <a href="{{ route('komoditas.show', $thumbnail->id) }}" class="image-link">
+                            <img src="{{ asset('storage/' . $img->image) }}" alt="{{ $thumbnail->title }}">
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        @endforeach
+    </div>
+</section>
+<!-- === ARTIKEL TERBARU === -->
 <section id="artikel" class="artikel">
     <div class="container">
-        <h2>Artikel Terbaru</h2>
-        <div class="grid">
-            @foreach ($articles->take(3) as $article)
-                <a href="{{ route('berita.show', $article->id) }}" class="card-link">
-    <div class="card">
-        <h3>{{ $article->title }}</h3>
-        <p>{{ Str::limit(strip_tags($article->article_content), 100) }}</p>
-    </div>
-</a>
-
+        <div class="section-header">
+            
+            <h2>Kegiatan Terbaru</h2>
+            <div class="header-divider"></div>
+        </div>
+        
+        <div class="artikel-grid">
+            @foreach ($articles->take(3) as $index => $article)
+                <article class="artikel-card {{ $index === 0 ? 'featured' : '' }}">
+                    <a href="{{ route('berita.show', $article->id) }}" class="artikel-link">
+                        <div class="artikel-image">
+                            @if($article->image)
+                                <img src="{{ asset('storage/' . $article->image) }}" alt="{{ $article->title }}">
+                            @else
+                                <img src="{{ Vite::asset('resources/images/ptpni.png') }}" alt="{{ $article->title }}">
+                            @endif
+                            <div class="artikel-badge">{{ strtoupper($article->tipe) }}</div>
+                        </div>
+                        <div class="artikel-content">
+                            <div class="artikel-meta">
+                                <span class="meta-date">
+                                    <i class="far fa-calendar"></i>
+                                    {{ $article->created_at->format('d F Y') }}
+                                </span>
+                                <span class="meta-time">
+                                    <i class="far fa-clock"></i>
+                                    {{ $article->created_at->format('H:i') }}
+                                </span>
+                            </div>
+                            <h3 class="artikel-title">{{ $article->title }}</h3>
+                            <p class="artikel-excerpt">{{ Str::limit(strip_tags($article->article_content), 150) }}</p>
+                            <div class="artikel-footer">
+                                <span class="read-more">
+                                    Baca Selengkapnya <i class="fas fa-arrow-right"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                </article>
             @endforeach
         </div>
+        
+        @if($articles->count() > 3)
+            <div class="artikel-view-all">
+                <a href="{{ route('articles.index') }}" class="btn-view-all">
+                    Lihat Semua Artikel
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </div>
+        @endif
     </div>
 </section>
     <!-- Tentang Kami -->
@@ -141,7 +178,7 @@
     <div style="width: 100%; border: none; margin-top: 50px;">
         @include('layouts.footer')
     </div>
+    @vite(['resources/js/script.js'])
 
-    <script src="@vite(['resources/js/script.js'])"></script>
 </body>
 </html>
