@@ -25,6 +25,9 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+//Kegiatan
+Route::get('/berita/{id}', [ArticleController::class, 'publicShow'])->name('berita.show');
+
 // Route yang butuh login
 Route::middleware('auth')->group(function () {
     // Profile
@@ -40,7 +43,7 @@ Route::middleware('auth')->group(function () {
 
      // CRUD Article
     Route::resource('articles', ArticleController::class);
-    Route::get('/berita/{id}', [ArticleController::class, 'publicShow'])->name('berita.show');    
+        
 });
 
 require __DIR__ . '/auth.php';
