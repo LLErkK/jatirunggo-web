@@ -15,4 +15,9 @@ class Article extends Model
         'image',
         'tipe',
     ];
+
+    public function images()
+    {
+        return $this->hasMany(Article_images::class,'article_id');
+    }
 }

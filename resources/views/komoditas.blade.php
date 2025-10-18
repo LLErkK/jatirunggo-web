@@ -24,15 +24,6 @@
                             <a href="{{ route('komoditas.show', $thumb->id) }}">
                                 {{ $thumb->title }}
                             </a>
-                            @if($thumb->photos->isNotEmpty())
-                                <ul class="section-dropdown">
-                                    @foreach($thumb->photos as $photo)
-                                        <li>
-                                            <a href="#{{ Str::slug($photo->title) }}">{{ $photo->title }}</a>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            @endif
                         </li>
                     @endforeach
                 </ul>
