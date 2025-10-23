@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Photo;
 use App\Models\Thumbnail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PhotoController extends Controller
 {
@@ -27,11 +28,13 @@ class PhotoController extends Controller
             'thumbnail_id' => 'required|exists:thumbnails,id',
             'title' => 'required|string|max:255',
             'caption' => 'required|string',
-            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048', // Max 2 MB
+            'image' => 'required|string', // base64 string dari cropper.js
         ]);
 
-        $path = $request->file('image')->store('photos', 'public');
+        // 🔹 Simpan gambar base64 ke storage
+        $path = $this->saveBase64Image($request->image, 'photos');
 
+        // 🔹 Simpan ke database
         Photo::create([
             'thumbnail_id' => $request->thumbnail_id,
             'title' => $request->title,
@@ -54,7 +57,7 @@ class PhotoController extends Controller
             'thumbnail_id' => 'required|exists:thumbnails,id',
             'title' => 'required|string|max:255',
             'caption' => 'required|string',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // Max 2 MB
+            'image' => 'nullable|string', // base64 string (optional)
         ]);
 
         $data = [
@@ -63,13 +66,14 @@ class PhotoController extends Controller
             'caption' => $request->caption,
         ];
 
-        if ($request->hasFile('image')) {
+        // Jika user mengganti gambar
+        if (!empty($request->image)) {
             // Hapus file lama jika ada
             if ($photo->image && Storage::disk('public')->exists($photo->image)) {
                 Storage::disk('public')->delete($photo->image);
             }
 
-            $data['image'] = $request->file('image')->store('photos', 'public');
+            $data['image'] = $this->saveBase64Image($request->image, 'photos');
         }
 
         $photo->update($data);
@@ -86,5 +90,31 @@ class PhotoController extends Controller
         $photo->delete();
 
         return redirect()->route('photos.index')->with('success', 'Foto berhasil dihapus!');
+    }
+
+    /**
+     * 🧠 Helper untuk menyimpan gambar base64 ke storage/public
+     */
+    private function saveBase64Image(string $base64Data, string $directory): string
+    {
+        if (preg_match('/^data:image\/(\w+);base64,/', $base64Data, $type)) {
+            $extension = strtolower($type[1]); // jpg, jpeg, png
+            $base64Data = substr($base64Data, strpos($base64Data, ',') + 1);
+            $base64Data = str_replace(' ', '+', $base64Data);
+            $imageData = base64_decode($base64Data);
+
+            if ($imageData === false) {
+                throw new \Exception('Gagal decode gambar base64');
+            }
+
+            $fileName = Str::uuid() . '.' . $extension;
+            $filePath = $directory . '/' . $fileName;
+
+            Storage::disk('public')->put($filePath, $imageData);
+
+            return $filePath;
+        }
+
+        throw new \Exception('Format gambar base64 tidak valid');
     }
 }
