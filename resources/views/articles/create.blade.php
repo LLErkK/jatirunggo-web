@@ -59,7 +59,7 @@
 
                     <div class="mb-4">
                         <label class="block font-medium mb-2">Isi Artikel <span class="text-red-500">*</span></label>
-                        <textarea id="editor" name="article_content" rows="6" class="w-full border border-gray-300 rounded-lg p-2" required>{{ old('article_content') }}</textarea>
+                        <textarea id="editor" name="article_content" rows="6" class="w-full border border-gray-300 rounded-lg p-2">{{ old('article_content') }}</textarea>
                         @error('article_content')
                             <span class="text-red-500 text-sm">{{ $message }}</span>
                         @enderror
@@ -116,23 +116,133 @@
     <script>
         let editorInstance;
 
-        // Preview Gambar Utama
-        document.getElementById('mainImage').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    document.getElementById('previewImg').src = event.target.result;
-                    document.getElementById('mainImagePreview').classList.remove('hidden');
-                }
-                reader.readAsDataURL(file);
+        // Jalankan setelah DOM ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 DOM Ready, initializing...');
+
+            // Preview Gambar Utama
+            const mainImageInput = document.getElementById('mainImage');
+            if (mainImageInput) {
+                mainImageInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            document.getElementById('previewImg').src = event.target.result;
+                            document.getElementById('mainImagePreview').classList.remove('hidden');
+                        }
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            // Drag & Drop Setup
+            const dropZone = document.querySelector('.border-dashed');
+            if (dropZone) {
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }, false);
+                });
+
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, () => {
+                        dropZone.classList.add('border-blue-400', 'bg-blue-50');
+                    });
+                });
+
+                ['dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, () => {
+                        dropZone.classList.remove('border-blue-400', 'bg-blue-50');
+                    });
+                });
+
+                dropZone.addEventListener('drop', function(e) {
+                    const input = document.getElementById('contentImages');
+                    if (input) {
+                        input.files = e.dataTransfer.files;
+                        previewContentImages(input);
+                    }
+                });
+            }
+
+            // Initialize CKEditor
+            const editorElement = document.querySelector('#editor');
+            if (editorElement) {
+                ClassicEditor
+                    .create(editorElement, {
+                        toolbar: [
+                            'heading', '|',
+                            'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
+                            'blockQuote', 'insertTable', '|',
+                            'undo', 'redo'
+                        ]
+                    })
+                    .then(editor => {
+                        editorInstance = editor;
+                        console.log('✅ CKEditor loaded');
+                    })
+                    .catch(error => {
+                        console.error('❌ CKEditor error:', error);
+                    });
+            }
+
+            // FORM SUBMIT HANDLER
+            const form = document.getElementById('articleForm');
+            if (form) {
+                console.log('✅ Form found, registering submit handler');
+                
+                form.addEventListener('submit', function(e) {
+                    console.log('🔥 SUBMIT CLICKED!');
+                    
+                    // Sync CKEditor jika ada
+                    if (editorInstance) {
+                        try {
+                            const data = editorInstance.getData();
+                            const editorTextarea = document.querySelector('#editor');
+                            editorTextarea.value = data;
+                            console.log('✅ CKEditor synced');
+                            
+                            // Validasi konten tidak kosong
+                            if (!data.trim() || data.trim() === '<p>&nbsp;</p>' || data.trim() === '<p></p>') {
+                                e.preventDefault();
+                                alert('⚠️ Isi artikel tidak boleh kosong!');
+                                return false;
+                            }
+                        } catch (err) {
+                            console.error('⚠️ CKEditor sync error:', err);
+                        }
+                    }
+                    
+                    // Log form data untuk debug
+                    const formData = new FormData(form);
+                    console.log('📦 Form data:');
+                    for (let [key, value] of formData.entries()) {
+                        if (value instanceof File) {
+                            console.log(key + ':', value.name);
+                        } else {
+                            console.log(key + ':', value.substring(0, 50));
+                        }
+                    }
+                    
+                    // Biarkan form submit secara normal
+                    console.log('✅ Submitting form...');
+                    return true;
+                });
+                
+                console.log('✅ Submit handler registered');
+            } else {
+                console.error('❌ Form not found!');
             }
         });
 
-        // Preview Content Images
+        // Preview Content Images - Global function
         function previewContentImages(input) {
             const previewContainer = document.getElementById('contentImagesPreview');
-            previewContainer.innerHTML = ''; // Clear previous previews
+            if (!previewContainer) return;
+            
+            previewContainer.innerHTML = '';
             
             if (input.files && input.files.length > 0) {
                 previewContainer.classList.remove('hidden');
@@ -149,7 +259,7 @@
                                 <button type="button" 
                                         onclick="removeImage(${index})" 
                                         class="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 shadow-lg">
-                                    <i class="fas fa-times text-xs"></i>
+                                    ×
                                 </button>
                             </div>
                             <div class="absolute bottom-2 left-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded">
@@ -166,9 +276,11 @@
             }
         }
 
-        // Remove Image
+        // Remove Image - Global function
         function removeImage(index) {
             const input = document.getElementById('contentImages');
+            if (!input) return;
+            
             const dt = new DataTransfer();
             
             Array.from(input.files).forEach((file, i) => {
@@ -180,62 +292,5 @@
             input.files = dt.files;
             previewContentImages(input);
         }
-
-        // Drag & Drop
-        const dropZone = document.querySelector('.border-dashed');
-        
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            dropZone.addEventListener(eventName, preventDefaults, false);
-        });
-
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropZone.addEventListener(eventName, () => {
-                dropZone.classList.add('border-blue-400', 'bg-blue-50');
-            });
-        });
-
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropZone.addEventListener(eventName, () => {
-                dropZone.classList.remove('border-blue-400', 'bg-blue-50');
-            });
-        });
-
-        dropZone.addEventListener('drop', function(e) {
-            const input = document.getElementById('contentImages');
-            input.files = e.dataTransfer.files;
-            previewContentImages(input);
-        });
-
-        // Initialize CKEditor (Simple, without image upload)
-        ClassicEditor
-            .create(document.querySelector('#editor'), {
-                toolbar: [
-                    'heading', '|',
-                    'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|',
-                    'blockQuote', 'insertTable', '|',
-                    'undo', 'redo'
-                ]
-            })
-            .then(editor => {
-                editorInstance = editor;
-                console.log('✅ CKEditor loaded');
-            })
-            .catch(error => {
-                console.error('❌ CKEditor error:', error);
-            });
-
-        // Handle form submit
-        document.querySelector('#articleForm').addEventListener('submit', function(e) {
-            if (editorInstance) {
-                const data = editorInstance.getData();
-                document.querySelector('#editor').value = data;
-                console.log('✅ Form submitting...');
-            }
-        });
     </script>
 </x-app-layout>
