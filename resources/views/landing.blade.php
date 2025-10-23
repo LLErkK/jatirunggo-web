@@ -30,6 +30,13 @@
     </header>
 
     <!-- Beranda -->
+    <section id="title" class="title">
+        <div>
+            <div>
+                <h1>PTPN I Regional 3 Kebun NGOBO</h1>
+            </div>
+        </div>
+    </section>
     <section id="home" class="hero">
         <div class="container">
             <div class="visi-misi-wrapper">
